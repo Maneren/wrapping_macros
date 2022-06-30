@@ -44,6 +44,10 @@ impl VisitMut for LiteralReplacer {
                 // Recurse in sub-expressions
                 self.visit_expr_mut(left);
                 self.visit_expr_mut(right);
+
+                // remove parenthesis to prevent clippy warning
+                let right = try_unwrap_parenthesis(right);
+
                 // Rewrite e.g. `a + b` to `a.wrapping_add(b)`
                 if let Some(method) = wrapping_method(op) {
                     *i = parse_quote!( #left.#method(#right) );
@@ -57,8 +61,11 @@ impl VisitMut for LiteralReplacer {
             }) => {
                 // Recurse in sub-expressions
                 self.visit_expr_mut(right);
-                // Rewrite e.g. `a += b` to `a = a.wrapping_add(b)`
 
+                // remove parenthesis to prevent clippy warning
+                let right = try_unwrap_parenthesis(right);
+
+                // Rewrite e.g. `a += b` to `a = a.wrapping_add(b)`
                 if let Some(method) = wrapping_method(op) {
                     let call = parse_quote!( #left.#method(#right) );
 
@@ -91,4 +98,12 @@ fn wrapping_method(op: &BinOp) -> Option<Ident> {
         _ => return None,
     };
     Some(Ident::new(name, Span::call_site()))
+}
+
+fn try_unwrap_parenthesis(expr: &mut Expr) -> &mut Expr {
+    if let Expr::Paren(ExprParen { expr, .. }) = expr {
+        expr
+    } else {
+        expr
+    }
 }
