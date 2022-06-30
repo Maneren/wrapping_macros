@@ -34,6 +34,9 @@ impl VisitMut for LiteralReplacer {
                 // Recurse in sub-expressions
                 self.visit_expr_mut(expr);
 
+                // remove parenthesis to prevent clippy warning
+                let expr = try_unwrap_parenthesis(expr);
+
                 // Rewrite `-a` to `a.wrapping_neg()`
                 let method = Ident::new("wrapping_neg", Span::call_site());
                 *i = parse_quote!( #expr.#method() );
@@ -46,6 +49,7 @@ impl VisitMut for LiteralReplacer {
                 self.visit_expr_mut(right);
 
                 // remove parenthesis to prevent clippy warning
+                let left = try_unwrap_parenthesis(left);
                 let right = try_unwrap_parenthesis(right);
 
                 // Rewrite e.g. `a + b` to `a.wrapping_add(b)`
