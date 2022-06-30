@@ -98,4 +98,11 @@ mod compound {
         }
         assert_eq!(byte, (long & 0xff) as u8);
     }
+
+    #[test]
+    fn inside_another_macro() {
+        let x = 128u8;
+        let string = format!("Answer: {}", wrapping! { x + 128 });
+        assert_eq!(string, "Answer: 0");
+    }
 }

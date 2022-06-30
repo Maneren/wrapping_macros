@@ -31,4 +31,22 @@ fn main() {
 }
 ```
 
-*Inspired by [`wrapping_macros`](https://github.com/lambda-fairy/wrapping_macros) crate by lfairy*
+## Caveat
+
+You cannot nest another macro invocation within a `wrapping!` block. For example, this will not work:
+
+```rust
+let x = 128u8;
+wrapping! {
+    println!("The answer is {}", x + 128) // Error
+}
+```
+
+Instead, move the macro call out of the `wrapping!` block:
+
+```rust
+let x = 128u8;
+println!("The answer is {}", wrapping! { x + 128 })
+````
+
+*Inspired by [`wrapping_macros`]("https://github.com/lambda-fairy/wrapping_macros") crate by lfairy*
