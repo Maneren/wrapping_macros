@@ -1,6 +1,6 @@
 [package]
-name = "wrapping_macros"
-version = "0.1.0"
+name = "wrapping_proc_macro"
+version = "1.0.0"
 authors = ["Maneren <maneren731@gmail.com>"]
 
 license = "MIT"
@@ -8,7 +8,7 @@ repository = "https://github.com/Maneren/wrapping_macros"
 description = "A proc macro for cleaner wrapping arithmetic."
 
 [lib]
-name = "wrapping_macros"
+name = "wrapping_proc_macro"
 proc-macro = true
 
 [[test]]

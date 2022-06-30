@@ -1,7 +1,7 @@
-extern crate wrapping_macros;
+extern crate wrapping_proc_macro;
 
 mod simple {
-    use wrapping_macros::wrapping;
+    use wrapping_proc_macro::wrapping;
 
     #[test]
     fn add() {
@@ -66,7 +66,7 @@ mod simple {
 }
 
 mod compound {
-    use wrapping_macros::wrapping;
+    use wrapping_proc_macro::wrapping;
 
     #[test]
     fn basic() {
