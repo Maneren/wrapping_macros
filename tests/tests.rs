@@ -51,15 +51,17 @@ mod simple {
     #[test]
     fn nested() {
         let a = 100u8;
-        let b = wrapping! { a + a * (a + a) };
-        assert_eq!(b, 132);
-        let c = wrapping! { -(a * (a + a + a)) };
+        let b = wrapping! { (a + a) * (a + a) };
+        assert_eq!(b, 64);
+        let c = wrapping! { -(a * (a + (a + a))) };
         assert_eq!(c, 208);
+    }
 
-        let x = 41i32;
-        wrapping! {
-            println!("The answer is {}", x + 1)
-        }
+    #[test]
+    fn assign() {
+        let mut a = 128u8;
+        wrapping! { a += a };
+        assert_eq!(a, 0);
     }
 }
 
