@@ -1,0 +1,21 @@
+[package]
+name = "wrapping_macros"
+version = "0.1.0"
+authors = ["Maneren <maneren731@gmail.com>"]
+
+license = "MIT"
+repository = "https://github.com/Maneren/wrapping_macros"
+description = "A proc macro for cleaner wrapping arithmetic."
+
+[lib]
+name = "wrapping_macros"
+proc-macro = true
+
+[[test]]
+name = "tests"
+path = "tests/tests.rs"
+
+[dependencies]
+syn = { version = "1.0.98", features = ["full", "visit-mut"] }
+proc-macro2 = "1.0.40"
+quote = "1.0.20"
