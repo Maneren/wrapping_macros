@@ -11,7 +11,7 @@ use quote::ToTokens;
 use syn::{
     parse_macro_input, parse_quote,
     visit_mut::{self, VisitMut},
-    BinOp, Expr, ExprAssign, ExprAssignOp, ExprBinary, ExprUnary, Ident, Token, UnOp,
+    BinOp, Expr, ExprAssignOp, ExprBinary, ExprParen, ExprUnary, Ident, UnOp,
 };
 
 #[proc_macro]
@@ -54,10 +54,7 @@ impl VisitMut for LiteralReplacer {
                 }
             }
             Expr::AssignOp(ExprAssignOp {
-                left,
-                op,
-                right,
-                attrs,
+                left, op, right, ..
             }) => {
                 // Recurse in sub-expressions
                 self.visit_expr_mut(right);
@@ -67,14 +64,7 @@ impl VisitMut for LiteralReplacer {
 
                 // Rewrite e.g. `a += b` to `a = a.wrapping_add(b)`
                 if let Some(method) = wrapping_method(op) {
-                    let call = parse_quote!( #left.#method(#right) );
-
-                    *i = Expr::Assign(ExprAssign {
-                        left: left.clone(),
-                        right: call,
-                        attrs: attrs.clone(),
-                        eq_token: Token![=](Span::call_site()),
-                    });
+                    *i = parse_quote!( #left = #left.#method(#right) );
                 }
             }
             _ => {
