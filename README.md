@@ -16,19 +16,42 @@ Add this to your `Cargo.toml`:
 wrapping_macros = "*"
 ```
 
-## Example
+## Examples
+
+```rust
+let a = 128u8;
+let b = wrapping! { a * 2 };
+
+assert_eq!(b, 0);
+```
+
+```rust
+let mut a = 250u8;
+let mut b = 4u8;
+let mut c = 100u8;
+wrapping! {
+    a += 10;
+    b -= 10;
+    c *= 10;
+}
+
+assert_eq!(a, 4);
+assert_eq!(b, 250);
+assert_eq!(c, 232);
+```
 
 ```rust
 use wrapping_macros::wrapping;
 
 fn main() {
     let mut sum = 0u8;
-    for x in 0u8..50 {
-        wrapping! {
+    wrapping! {
+        for x in 0u8..50 {
             sum += x;
         }
     }
 }
+assert_eq!(sum, 201);
 ```
 
 ## Caveat

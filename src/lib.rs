@@ -5,25 +5,43 @@ extern crate proc_macro2;
 extern crate quote;
 extern crate syn;
 
-use proc_macro::TokenStream;
+use proc_macro::{Delimiter, Group, TokenStream, TokenTree};
 use proc_macro2::Span;
 use quote::ToTokens;
 use syn::{
     parse_macro_input, parse_quote,
     visit_mut::{self, VisitMut},
-    BinOp, Expr, ExprAssignOp, ExprBinary, ExprParen, ExprUnary, Ident, UnOp,
+    BinOp, Block, Expr, ExprAssignOp, ExprBinary, ExprParen, ExprUnary, Ident, UnOp,
 };
 
 #[proc_macro]
 pub fn wrapping(input: TokenStream) -> TokenStream {
-    let mut input = parse_macro_input!(input as Expr);
-    LiteralReplacer.visit_expr_mut(&mut input);
-    input.into_token_stream().into()
+    // put everything into a block
+    let input = TokenTree::Group(Group::new(Delimiter::Brace, input)).into();
+
+    // parse the input
+    let mut input = parse_macro_input!(input as Block);
+
+    // convert the operators
+    LiteralReplacer.visit_block_mut(&mut input);
+
+    // remove surrounding block
+    input
+        .stmts
+        .into_iter()
+        .map(|stmt| TokenStream::from(stmt.into_token_stream()))
+        .collect()
 }
 
 struct LiteralReplacer;
 
 impl VisitMut for LiteralReplacer {
+    fn visit_block_mut(&mut self, i: &mut Block) {
+        for stmt in &mut i.stmts {
+            self.visit_stmt_mut(stmt);
+        }
+    }
+
     fn visit_expr_mut(&mut self, i: &mut Expr) {
         match i {
             Expr::Unary(ExprUnary {

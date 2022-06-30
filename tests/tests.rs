@@ -68,7 +68,7 @@ mod simple {
 mod compound {
     use wrapping_macros::wrapping;
 
-    /* #[test]
+    #[test]
     fn basic() {
         let mut a = 250u8;
         let mut b = 4u8;
@@ -81,7 +81,7 @@ mod compound {
         assert_eq!(a, 4);
         assert_eq!(b, 250);
         assert_eq!(c, 232);
-    } */
+    }
 
     #[test]
     fn accumulate() {
