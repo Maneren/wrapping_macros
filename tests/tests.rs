@@ -102,7 +102,7 @@ mod compound {
     #[test]
     fn inside_another_macro() {
         let x = 128u8;
-        let string = format!("Answer: {}", wrapping! { x + 128 });
+        let string = format!("Answer: {ans}", ans = wrapping! { x + 128 });
         assert_eq!(string, "Answer: 0");
     }
 }
